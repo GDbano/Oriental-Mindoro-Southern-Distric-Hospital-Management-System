@@ -1,26 +1,27 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.3-cli-alpine AS vendor
+FROM php:8.3-cli-bookworm AS vendor
 WORKDIR /app
 
-RUN apk add --no-cache \
-    curl \
-    freetype-dev \
-    icu-dev \
-    libjpeg-turbo-dev \
-    libpng-dev \
-    libzip-dev \
-    unzip \
-    zip \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        git \
+        unzip \
+        libfreetype6-dev \
+        libicu-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libzip-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install gd intl mbstring pdo_mysql zip opcache
+    && docker-php-ext-install -j$(nproc) gd intl mbstring pdo_mysql zip opcache \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY composer.json composer.lock* ./
 RUN composer install --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader --no-scripts
 
-FROM node:20-alpine AS frontend
+FROM node:20-bookworm-slim AS frontend
 WORKDIR /app
 
 COPY package.json package-lock.json* ./
@@ -38,22 +39,23 @@ COPY routes ./routes
 
 RUN npm run build
 
-FROM php:8.3-cli-alpine AS runtime
+FROM php:8.3-cli-bookworm AS runtime
 WORKDIR /app
 
-RUN apk add --no-cache \
-    bash \
-    curl \
-    freetype-dev \
-    icu-dev \
-    libjpeg-turbo-dev \
-    libpng-dev \
-    libzip-dev \
-    oniguruma-dev \
-    unzip \
-    zip \
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        bash \
+        git \
+        unzip \
+        libfreetype6-dev \
+        libicu-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libzip-dev \
+        libonig-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install bcmath exif gd intl mbstring pdo_mysql zip opcache
+    && docker-php-ext-install -j$(nproc) bcmath exif gd intl mbstring pdo_mysql zip opcache \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY . .
 COPY --from=vendor /app/vendor ./vendor
