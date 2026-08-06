@@ -27,9 +27,10 @@ return [
         'http://localhost:5173',
         'https://orminsoutherndistricthospital.com',
         'https://www.orminsoutherndistricthospital.com',
+        'https://oriental-mindoro-southern-distric-h.vercel.app',
     ],
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => ['/^https:\/\/.*\.vercel\.app$/'],
 
     'allowed_headers' => ['*'],
 
