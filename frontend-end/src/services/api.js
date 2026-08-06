@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://backend-end.onrender.com/api',
+  baseURL: import.meta.env.VITE_API_URL || 'https://backend-end.onrender.com/api',
 })
 
 API.interceptors.request.use((config) => {
