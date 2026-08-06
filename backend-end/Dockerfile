@@ -11,10 +11,11 @@ RUN apt-get update \
         libicu-dev \
         libjpeg62-turbo-dev \
         libpng-dev \
+        libpq-dev \
         libonig-dev \
         libzip-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd intl mbstring pdo_mysql zip \
+    && docker-php-ext-install -j$(nproc) gd intl mbstring pdo_pgsql pgsql zip \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -52,10 +53,11 @@ RUN apt-get update \
         libicu-dev \
         libjpeg62-turbo-dev \
         libpng-dev \
+        libpq-dev \
         libzip-dev \
         libonig-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) bcmath exif gd intl mbstring pdo_mysql zip \
+    && docker-php-ext-install -j$(nproc) bcmath exif gd intl mbstring pdo_pgsql pgsql zip \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . .
@@ -68,4 +70,4 @@ RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framewor
 ENV PORT=10000
 EXPOSE 10000
 
-CMD ["sh", "-lc", "php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan serve --host 0.0.0.0 --port ${PORT:-10000}"]
+CMD ["sh", "-lc", "php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan migrate --force && if [ \"${RUN_SEED:-false}\" = \"true\" ]; then php artisan db:seed --force; fi && php artisan serve --host 0.0.0.0 --port ${PORT:-10000}"]
