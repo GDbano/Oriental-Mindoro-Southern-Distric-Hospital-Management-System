@@ -12,14 +12,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (Schema::getConnection()->getDriverName() !== 'mysql') {
+        $driver = Schema::getConnection()->getDriverName();
+
+        if ($driver === 'mysql') {
+            Schema::table('users', function (Blueprint $table) {
+                DB::statement("ALTER TABLE users MODIFY COLUMN role VARCHAR(255) NOT NULL DEFAULT 'patient'");
+            });
+
             return;
         }
 
-        Schema::table('users', function (Blueprint $table) {
-            // Modify role column to be a string instead of enum
-            DB::statement("ALTER TABLE users MODIFY COLUMN role VARCHAR(255) NOT NULL DEFAULT 'patient'");
-        });
+        if ($driver === 'pgsql') {
+            DB::statement("ALTER TABLE users ALTER COLUMN role TYPE VARCHAR(255) USING role::varchar(255)");
+            DB::statement("ALTER TABLE users ALTER COLUMN role SET DEFAULT 'patient'");
+            DB::statement("ALTER TABLE users ALTER COLUMN role SET NOT NULL");
+        }
     }
 
     /**
@@ -27,12 +34,20 @@ return new class extends Migration
      */
     public function down(): void
     {
-        if (Schema::getConnection()->getDriverName() !== 'mysql') {
+        $driver = Schema::getConnection()->getDriverName();
+
+        if ($driver === 'mysql') {
+            Schema::table('users', function (Blueprint $table) {
+                DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('patient', 'doctor', 'staff', 'admin') NOT NULL DEFAULT 'patient'");
+            });
+
             return;
         }
 
-        Schema::table('users', function (Blueprint $table) {
-            DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('patient', 'doctor', 'staff', 'admin') NOT NULL DEFAULT 'patient'");
-        });
+        if ($driver === 'pgsql') {
+            DB::statement("ALTER TABLE users ALTER COLUMN role TYPE VARCHAR(255) USING role::varchar(255)");
+            DB::statement("ALTER TABLE users ALTER COLUMN role SET DEFAULT 'patient'");
+            DB::statement("ALTER TABLE users ALTER COLUMN role SET NOT NULL");
+        }
     }
 };
