@@ -13,7 +13,7 @@ RUN apt-get update \
         libpng-dev \
         libzip-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd intl mbstring pdo_mysql zip opcache \
+    && docker-php-ext-install -j$(nproc) gd intl mbstring pdo_mysql zip \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -54,7 +54,7 @@ RUN apt-get update \
         libzip-dev \
         libonig-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) bcmath exif gd intl mbstring pdo_mysql zip opcache \
+    && docker-php-ext-install -j$(nproc) bcmath exif gd intl mbstring pdo_mysql zip \
     && rm -rf /var/lib/apt/lists/*
 
 COPY . .
