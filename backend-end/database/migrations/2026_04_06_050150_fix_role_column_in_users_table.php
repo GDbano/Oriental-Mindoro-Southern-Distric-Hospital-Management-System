@@ -12,6 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::getConnection()->getDriverName() !== 'mysql') {
+            return;
+        }
+
         Schema::table('users', function (Blueprint $table) {
             // Modify role column to be a string instead of enum
             DB::statement("ALTER TABLE users MODIFY COLUMN role VARCHAR(255) NOT NULL DEFAULT 'patient'");
@@ -23,6 +27,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        if (Schema::getConnection()->getDriverName() !== 'mysql') {
+            return;
+        }
+
         Schema::table('users', function (Blueprint $table) {
             DB::statement("ALTER TABLE users MODIFY COLUMN role ENUM('patient', 'doctor', 'staff', 'admin') NOT NULL DEFAULT 'patient'");
         });
