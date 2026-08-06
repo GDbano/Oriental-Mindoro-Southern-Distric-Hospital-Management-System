@@ -29,7 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/appointments', [AppointmentController::class, 'store']);
     Route::get('/appointments/{appointment}', [AppointmentController::class, 'show']);
     Route::put('/appointments/{appointment}', [AppointmentController::class, 'update']);
-    
+
     // Doctor specific
     Route::get('/today-appointments', [AppointmentController::class, 'todayAppointments']);
     Route::get('/appointments/{appointment}/consult', [AppointmentController::class, 'showConsultation']);
