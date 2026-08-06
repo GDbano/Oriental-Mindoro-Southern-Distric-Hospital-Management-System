@@ -22,6 +22,7 @@ return new class extends Migration {
         }
 
         if ($driver === 'pgsql') {
+            DB::statement("ALTER TABLE users DROP CONSTRAINT IF EXISTS users_role_check");
             DB::statement("ALTER TABLE users ALTER COLUMN role TYPE VARCHAR(255) USING role::varchar(255)");
             DB::statement("ALTER TABLE users ALTER COLUMN role SET DEFAULT 'patient'");
             DB::statement("ALTER TABLE users ALTER COLUMN role SET NOT NULL");
