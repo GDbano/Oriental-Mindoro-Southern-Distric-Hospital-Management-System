@@ -68,6 +68,7 @@ RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framewor
     && chown -R www-data:www-data storage bootstrap/cache
 
 ENV PORT=10000
+ENV RUN_SEED=true
 EXPOSE 10000
 
-CMD ["sh", "-lc", "php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan migrate --force && if [ \"${RUN_SEED:-false}\" = \"true\" ]; then php artisan db:seed --force; fi && php artisan serve --host 0.0.0.0 --port ${PORT:-10000}"]
+CMD ["sh", "-lc", "php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan migrate --force && if [ \"${RUN_SEED:-true}\" = \"true\" ]; then php artisan db:seed --force; fi && php artisan serve --host 0.0.0.0 --port ${PORT:-10000}"]
