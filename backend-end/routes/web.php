@@ -13,11 +13,15 @@ Route::get('/register', [AuthController::class, 'showRegister']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout']);
 
+// Public health check / landing route for the Render app URL
+Route::get('/', function () {
+    return response()->json(['message' => 'OMSDH backend is running']);
+});
+
 // Protected Routes
 Route::middleware(['auth'])->group(function () {
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index']);
-    Route::get('/', [DashboardController::class, 'index']);
 
     // Appointments
     Route::get('/appointments', [AppointmentController::class, 'index']);
