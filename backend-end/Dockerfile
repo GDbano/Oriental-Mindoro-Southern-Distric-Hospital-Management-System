@@ -68,4 +68,4 @@ RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framewor
 ENV PORT=10000
 EXPOSE 10000
 
-CMD ["sh", "-lc", "php artisan optimize:clear && php artisan serve --host 0.0.0.0 --port ${PORT:-10000}"]
+CMD ["sh", "-lc", "php artisan config:clear && php artisan route:clear && php artisan view:clear && php artisan serve --host 0.0.0.0 --port ${PORT:-10000}"]
