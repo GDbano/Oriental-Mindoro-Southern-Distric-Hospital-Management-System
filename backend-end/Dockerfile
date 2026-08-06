@@ -1,10 +1,24 @@
 # syntax=docker/dockerfile:1
 
-FROM composer:2 AS vendor
+FROM php:8.3-cli-alpine AS vendor
 WORKDIR /app
 
+RUN apk add --no-cache \
+    curl \
+    freetype-dev \
+    icu-dev \
+    libjpeg-turbo-dev \
+    libpng-dev \
+    libzip-dev \
+    unzip \
+    zip \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install gd intl mbstring pdo_mysql zip opcache
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
 COPY composer.json composer.lock* ./
-RUN composer install --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader
+RUN composer install --no-dev --no-interaction --no-progress --prefer-dist --optimize-autoloader --no-scripts
 
 FROM node:20-alpine AS frontend
 WORKDIR /app
