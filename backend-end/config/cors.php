@@ -19,7 +19,15 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://localhost:3003'],
+    'allowed_origins' => [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://localhost:3002',
+        'http://localhost:3003',
+        'http://localhost:5173',
+        'https://orminsoutherndistricthospital.com',
+        'https://www.orminsoutherndistricthospital.com',
+    ],
 
     'allowed_origins_patterns' => [],
 
